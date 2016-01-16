@@ -10,15 +10,15 @@ public class LinearHashing {
 	private int nextPtr            ;
 	private int noOfBuckets        ;
 	private int noOfRecordsInserted;
-    private String fileName        ;
+//    private String fileName        ;
 	
-    LinearHashing(String fileName)
+    public LinearHashing()
 	{
 		this.level                = 0;
 		this.nextPtr              = 0;
 		this.noOfBuckets          = 2;
 		this.noOfRecordsInserted  = 0;
-		this.fileName             = fileName;
+//		this.fileName             = fileName;
 	}
 	
 	public int getLevel() {
@@ -49,11 +49,11 @@ public class LinearHashing {
 	{
 		 FileInputStream in = null;
 		 try {
-	         in = new FileInputStream(this.fileName);
+	         in = new FileInputStream("uniform.txt");
 	         int c;
 	         while ((c = in.read()) != -1) {
 	        	 //logic for insertion
-	        	 System.out.println("I am waiting for Venky to Complete. Record 1 = "+c);
+	        	 System.out.println("I am waiting for Venky to Complete. Record = "+c);
 	         }
 		 } catch (Exception e) {
 			
