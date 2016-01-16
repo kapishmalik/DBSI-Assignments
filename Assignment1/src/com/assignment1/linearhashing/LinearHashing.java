@@ -3,6 +3,7 @@ package com.assignment1.linearhashing;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -21,7 +22,7 @@ public class LinearHashing {
 	private LinearHash linearHashfile   ;
 	
 	//Constants
-	static private String FILENAME = "uniform.txt";
+	static private String FILENAME = "highbit.txt";
 //    private String fileName      ;
 	
     public LinearHashing(int m,int capacity)
@@ -30,7 +31,9 @@ public class LinearHashing {
 		this.nextPtr              = 0;
 		this.m                    = m;
 		this.noOfRecordsInserted  = 0;
-		totalInsertDiskAccess     = 0;
+		this.totalInsertDiskAccess= 0;
+		this.totalSearchDiskAccess= 0;
+		this.noOfSuccessSearch    = 0;
 		totalSplitCost            = 0;
 //		this.fileName             = fileName;
 		Bucket.capacity  = capacity ;
@@ -114,7 +117,7 @@ public class LinearHashing {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		 
+	 
 	}
 	private int split()
 	{
@@ -154,17 +157,54 @@ public class LinearHashing {
 	}
 	private void search()
 	{
-	  
+		Random generator = new Random();
+		int counter = 0;
+		while(counter <50){
+			long keyToBeSearched = generator.nextInt(800000);
+			int mod1             = (int) (Math.pow(2,this.level)*m);
+			int mod2             = (int) (Math.pow(2,this.level+1)*m);
+			int hashValue = (int)keyToBeSearched % mod1;
+			int diskAccess = 0;
+			if(hashValue >= this.nextPtr)
+			{
+				//call the search function in Secondary Storage
+				diskAccess = this.linearHashfile.searchLh(keyToBeSearched,hashValue);
+			}
+			else
+			{
+				//re-hash with i+1 hash  function
+				hashValue = (int)keyToBeSearched % mod2;
+				//call the search function in Secondary Storage
+				diskAccess = this.linearHashfile.searchLh(keyToBeSearched,hashValue);
+			}
+			if(diskAccess > 0)
+			{
+				this.noOfSuccessSearch++;
+				this.totalSearchDiskAccess += diskAccess;
+				System.out.println("Successful key found "+keyToBeSearched);
+				
+			}
+			else
+			{
+				System.out.println("UnSuccessful key not found "+keyToBeSearched);	
+			}
+			counter++;	
+			
+		}
 	}
 	public void simulateLinearHashing()
 	{
 		System.out.println("I am inside simulate LH");
 //		Bucket.capacity = 10;
 		insert();
+		search();
 		System.out.println("Total Disk Access are "+this.totalInsertDiskAccess);
 		System.out.println("Total Split Cost is "+this.totalSplitCost);
 		System.out.println("Total Records inserted "+this.noOfRecordsInserted);
 		System.out.println("Total buckets "+this.linearHashfile.totalBuckets());
+		System.out.println("Total no of successful search "+this.noOfSuccessSearch);
+		System.out.println("Total successful search disk Access "+this.totalSearchDiskAccess);
+		
 	}
 	
 }

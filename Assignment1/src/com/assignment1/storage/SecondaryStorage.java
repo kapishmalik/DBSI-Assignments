@@ -66,10 +66,7 @@ public class SecondaryStorage  implements LinearHash {
 		}
 		return temp;
 	}
-		
-
-	public int totalBuckets(){
-
+	 public int totalBuckets(){
 		
 		int i,totalbuckets=0;
 		for(i= 0;i<store.size();i++){
@@ -80,23 +77,24 @@ public class SecondaryStorage  implements LinearHash {
 		
 		return totalbuckets;
 	}
-	public int searchLh(long key,int bucket){
-		
-		Vector<Bucket> temp = store.get(bucket);
-		int i;
-		
-		for(i=0;i<temp.size();i++){
+
+	 public int searchLh(long key,int bucket){
 			
-			List<Long> bucketElements = temp.get(i).getBucketList();
-			if(bucketElements.contains(key))
-				return i+1;
+			Vector<Bucket> temp = store.get(bucket);
+			int i;
 			
+			for(i=0;i<temp.size();i++){
+				
+				List<Long> bucketElements = temp.get(i).getBucketList();
+				if(bucketElements.contains(key))
+					return i+1;
+				
+				
+				
+			}
 			
+			return -1;
 			
 		}
-		
-		return -1;
-		
-	}
 
 }
