@@ -45,6 +45,12 @@ public class SecondaryStorage  implements LinearHash {
 					
 	    
 	}
+	public void expand(){
+		
+		Vector<Bucket> bucket = new Vector<Bucket>(1,1);
+		store.add(bucket);
+		
+	}
 	
 	public int searchLh(long key){
 		
