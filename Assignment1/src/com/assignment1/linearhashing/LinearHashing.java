@@ -21,7 +21,7 @@ public class LinearHashing {
 	private LinearHash linearHashfile   ;
 	
 	//Constants
-	static private String FILENAME = "uniform1.txt";
+	static private String FILENAME = "uniform.txt";
 //    private String fileName      ;
 	
     public LinearHashing(int m,int capacity)
@@ -67,7 +67,7 @@ public class LinearHashing {
 		
 		 FileInputStream in = null;
 		 Scanner scanner;
-		 int count = 0;
+		 
 		try {
 			scanner = new Scanner(new File(FILENAME));
 			 while(scanner.hasNextLong())
@@ -77,7 +77,7 @@ public class LinearHashing {
 				 int mod1  = (int) (Math.pow(2,this.level)*m);
 				 int mod2  = (int) (Math.pow(2,this.level+1)*m);
 				 int hashValue = (int) (key % mod1);
-				 System.out.println(mod1+" "+mod2);
+				// System.out.println(mod1+" "+mod2);
 				 String diskAccessAndStatus = "-";
 				 int diskAccess=0,status=0;
 				 if((hashValue) >= this.getNextPtr())
@@ -91,11 +91,11 @@ public class LinearHashing {
 					diskAccessAndStatus = linearHashfile.insertLh(key,hashValue);
 					
 				 }
-				 System.out.println(diskAccessAndStatus);
+				// System.out.println(diskAccessAndStatus);
 				 String[] del = diskAccessAndStatus.split("-");
 				 	 diskAccess = Integer.parseInt(del[0]); 
 					 status     = Integer.parseInt(del[1]);
-					 System.out.println("Status Value is "+status);
+				//	 System.out.println("Status Value is "+status);
 				 
 				 this.totalInsertDiskAccess += diskAccess;
 				  if(status ==  1)
@@ -105,9 +105,9 @@ public class LinearHashing {
 				     setNextPtr();
 				 }
 				
-				 count++;
-			    // System.out.println("Count is "+count);
-				 System.out.println("Next Ptr "+nextPtr);
+				  this.noOfRecordsInserted++;
+			    
+			//	 System.out.println("Next Ptr "+nextPtr);
 			 }
 			
 		} catch (Exception e) {
@@ -118,19 +118,19 @@ public class LinearHashing {
 	}
 	private int split()
 	{
-		System.out.println("I am in split");
+		//System.out.println("I am in split");
 		Vector<Bucket> bucketVector= linearHashfile.getBucket(this.nextPtr);
 		linearHashfile.expandAndRemove(this.nextPtr);
 		int mod2  = (int) (Math.pow(2,this.level+1)*m);
 		int i,j;
 		String diskAccessAndStatus = "-";
 		 int diskAccess=1;
-		 for(i=0;i<bucketVector.size();i++)
+		/* for(i=0;i<bucketVector.size();i++)
 	     {
 			 List<Long> reHashKeys = bucketVector.get(i).getBucketList();
 			 System.out.print(" "+reHashKeys);
-	     }
-		 System.out.println("");
+	     }*/
+		// System.out.println("");
 		for(i=0;i<bucketVector.size();i++)
 		{
 			List<Long> reHashKeys = bucketVector.get(i).getBucketList();
@@ -142,27 +142,29 @@ public class LinearHashing {
 				int hashValue = (int) (key%mod2);
 				diskAccessAndStatus=linearHashfile.insertLh(key, hashValue);
 				String[] del = diskAccessAndStatus.split("-");
-				System.out.println("Disk Access | Status in split function"+del[0]+" "+del[1]);
-				System.out.println("del[0] "+del[0]);
+				//System.out.println("Disk Access | Status in split function"+del[0]+" "+del[1]);
+				//System.out.println("del[0] "+del[0]);
 				 diskAccess+=Integer.parseInt(del[0]);
 				 
 			}
 		}
-		System.out.println("Split Cost = "+diskAccess);
+		//System.out.println("Split Cost = "+diskAccess);
 		totalSplitCost +=diskAccess;
 		return 0;
 	}
 	private void search()
 	{
-	  /* 
-	     
-	*/	
+	  
 	}
 	public void simulateLinearHashing()
 	{
 		System.out.println("I am inside simulate LH");
 //		Bucket.capacity = 10;
 		insert();
+		System.out.println("Total Disk Access are "+this.totalInsertDiskAccess);
+		System.out.println("Total Split Cost is "+this.totalSplitCost);
+		System.out.println("Total Records inserted "+this.noOfRecordsInserted);
+		System.out.println("Total buckets "+this.linearHashfile.totalBuckets());
 	}
 	
 }

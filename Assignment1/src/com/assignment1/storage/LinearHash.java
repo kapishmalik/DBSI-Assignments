@@ -9,5 +9,4 @@ public interface LinearHash {
 	public void expandAndRemove(int index); 
 	public Vector<Bucket> getBucket(int n);
 	public int totalBuckets();
-	
 }

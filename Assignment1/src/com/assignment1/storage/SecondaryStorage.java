@@ -25,7 +25,7 @@ public class SecondaryStorage  implements LinearHash {
 		
 		int numberOfBucketAccess=1;
 		Vector<Bucket> bucketVector =  store.get(bucket);
-		System.out.println(key+" "+bucket);
+		//System.out.println(key+" "+bucket);
 		numberOfBucketAccess =bucketVector.size();	
 		
 		if(bucketVector.get(numberOfBucketAccess-1).getfreespace() !=0){
@@ -69,8 +69,8 @@ public class SecondaryStorage  implements LinearHash {
 		
 		return 0;
 	}
-	
-	public int totalBuckets(){
+
+     public int totalBuckets(){
 		
 		int i,totalbuckets=0;
 		for(i= 0;i<store.size();i++){
