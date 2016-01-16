@@ -8,5 +8,6 @@ public interface LinearHash {
 	public int searchLh(long key);
 	public void expandAndRemove(int index); 
 	public Vector<Bucket> getBucket(int n);
+	public int totalBuckets();
 	
 }
