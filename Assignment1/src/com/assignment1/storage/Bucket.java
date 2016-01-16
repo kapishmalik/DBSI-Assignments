@@ -4,7 +4,7 @@ public class Bucket {
 	
 	private int nextBucket = -1;
 	private List<Long> list;
-	static int capacity;
+	public static int capacity;
 	private int freeSpace;
 	
 	Bucket( ){

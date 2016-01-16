@@ -6,7 +6,7 @@ public class SecondaryStorage  implements LinearHash {
 	
 	private Vector<Vector<Bucket>> store;
 	
-	SecondaryStorage(int initialCapacity){
+	public SecondaryStorage(int initialCapacity){
 		
 		store = new Vector<Vector<Bucket>>(initialCapacity,1);
 		int i;		
@@ -20,11 +20,12 @@ public class SecondaryStorage  implements LinearHash {
 		
 	}
 	
+	
 	public String insertLh(long key,int bucket){
 		
 		int numberOfBucketAccess=1;
 		Vector<Bucket> bucketVector =  store.get(bucket);
-		
+		System.out.println(key+" "+bucket);
 		numberOfBucketAccess =bucketVector.size();	
 		
 		if(bucketVector.get(numberOfBucketAccess-1).getfreespace() !=0){

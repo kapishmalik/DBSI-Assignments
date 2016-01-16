@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Scanner;
 
+import com.assignment1.storage.*;
+
 public class LinearHashing {
 
 	private int level                   ;
@@ -13,9 +15,10 @@ public class LinearHashing {
 	private int m                       ;
 	private int noOfRecordsInserted     ;
 	private int noOfSuccessSearch       ;
+	private LinearHash linearHashfile   ;
 	
 	//Constants
-	static private String FILENAME = "uniform.txt";
+	static private String FILENAME = "uniform1.txt";
 //    private String fileName      ;
 	
     public LinearHashing(int m)
@@ -25,6 +28,8 @@ public class LinearHashing {
 		this.m                    = m;
 		this.noOfRecordsInserted  = 0;
 //		this.fileName             = fileName;
+		Bucket.capacity = 10;
+		linearHashfile = new SecondaryStorage(m);
 	}
 	
 	public int getLevel() {
@@ -62,29 +67,32 @@ public class LinearHashing {
 			 while(scanner.hasNextLong())
 			 {
 				 long key = scanner.nextLong();
-				 System.out.println("I am waiting for Venky to Complete. Record = "+key);
+//				 System.out.println("I am waiting for Venky to Complete. Record = "+key);
 				 int mod1  = (int) (Math.pow(2,this.level)*m);
 				 int mod2  = (int) (Math.pow(2,this.level+1)*m);
 				 int hashValue = (int) (key % mod1);
+				 System.out.println(mod1+" "+mod2);
 				 String diskAccessAndStatus = "|";
 				 int diskAccess=0,status=0;
 				 if((hashValue) >= this.getNextPtr())
 				 {
-					//diskAccessAndStatus = insertLh(key,hashValue);
+					diskAccessAndStatus = linearHashfile.insertLh(key,hashValue);
 					 
 				 }
 				 else
 				 {
 					hashValue = (int) (key %mod2);
-				//	diskAccessAndStatus = insertLh(key,hashValue);
+					diskAccessAndStatus = linearHashfile.insertLh(key,hashValue);
 					
 				 }
+				 System.out.println(diskAccessAndStatus);
 				 String[] del = diskAccessAndStatus.split("|");
 				 if(del.length ==2)
 				 {
 					 diskAccess = Integer.parseInt(del[0]); 
 					 status     = Integer.parseInt(del[1]);
 				 }
+				 
 				 else
 				 {
 					 //wrong return code do something
@@ -120,6 +128,7 @@ public class LinearHashing {
 	public void simulateLinearHashing()
 	{
 		System.out.println("I am inside simulate LH");
+//		Bucket.capacity = 10;
 		insert();
 	}
 	
