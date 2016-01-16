@@ -89,6 +89,8 @@ public class Simulation {
 			
 			
 		}
+		Simulate s = new Simulate();
+		
 		
 		
 	}

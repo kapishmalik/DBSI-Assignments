@@ -74,7 +74,7 @@ public class LinearHashing {
 	}
 	public void simulateLinearHashing()
 	{
-		
+		insert();
 	}
 	
 }
