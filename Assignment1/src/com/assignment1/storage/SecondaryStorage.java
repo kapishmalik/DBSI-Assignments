@@ -1,5 +1,6 @@
 package com.assignment1.storage;
 
+import java.util.List;
 import java.util.Vector;
 
 public class SecondaryStorage  implements LinearHash {
@@ -65,12 +66,15 @@ public class SecondaryStorage  implements LinearHash {
 		}
 		return temp;
 	}
-	public int searchLh(long key){
 		
+<<<<<<< 829ebada195e6c32217a6c3b4aec1fb558e0d3ee
 		return 0;
 	}
 
      public int totalBuckets(){
+=======
+	public int totalBuckets(){
+>>>>>>> 7f6ca4d6bd80fa1971ce31106ea0a2a1d98f8641
 		
 		int i,totalbuckets=0;
 		for(i= 0;i<store.size();i++){
@@ -80,6 +84,24 @@ public class SecondaryStorage  implements LinearHash {
 		}
 		
 		return totalbuckets;
+	}
+	public int searchLh(long key,int bucket){
+		
+		Vector<Bucket> temp = store.get(bucket);
+		int i;
+		
+		for(i=0;i<temp.size();i++){
+			
+			List<Long> bucketElements = temp.get(i).getBucketList();
+			if(bucketElements.contains(key))
+				return i+1;
+			
+			
+			
+		}
+		
+		return -1;
+		
 	}
 
 }
