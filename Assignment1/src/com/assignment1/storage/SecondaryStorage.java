@@ -31,27 +31,40 @@ public class SecondaryStorage  implements LinearHash {
 		if(bucketVector.get(numberOfBucketAccess-1).getfreespace() !=0){
 			
 			bucketVector.get(numberOfBucketAccess-1).addElemet(key);	
-			return String.valueOf(numberOfBucketAccess)+"|"+"0";
+			return String.valueOf(numberOfBucketAccess)+"-"+"0";
 			
 		}
 		else{
 			bucketVector.add(new Bucket());
 			bucketVector.get(numberOfBucketAccess-1).updateNextBucket(numberOfBucketAccess);
 			bucketVector.get(numberOfBucketAccess).addElemet(key);
-			return String.valueOf(numberOfBucketAccess+1)+"|"+"1";
+			return String.valueOf(numberOfBucketAccess+1)+"-"+"1";
 		}
 			
 		
 					
 	    
 	}
-	public void expand(){
+	public void expandAndRemove(int index){
 		
-		Vector<Bucket> bucket = new Vector<Bucket>(1,1);
-		store.add(bucket);
+		store.get(index).removeAllElements();
+		store.get(index).add(new Bucket());
+		Vector<Bucket> bucketVector = new Vector<Bucket>(1,1);
+		bucketVector.add(new Bucket());
+		store.add(bucketVector);
 		
 	}
 	
+	public Vector<Bucket> getBucket(int index)
+	{
+		Vector<Bucket> temp = new Vector<Bucket>();
+		int i;
+		for(i=0;i<store.get(index).size();i++)
+		{
+			temp.add(store.get(index).get(i));
+		}
+		return temp;
+	}
 	public int searchLh(long key){
 		
 		return 0;

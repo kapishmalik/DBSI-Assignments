@@ -104,7 +104,7 @@ class Simulate{
 		
 //		Create two objects for LH and EH
 		
-		LinearHashing lh = new LinearHashing(2);
+		LinearHashing lh = new LinearHashing(2,1);
 		lh.simulateLinearHashing();
 		
 	}

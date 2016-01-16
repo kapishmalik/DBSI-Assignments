@@ -19,6 +19,10 @@ public class Bucket {
 		freeSpace = Bucket.capacity -list.size(); 
 		
 	}
+	public List<Long> getBucketList()
+	{
+		return list;
+	}
 	public int size(){
 	
 		return list.size();
