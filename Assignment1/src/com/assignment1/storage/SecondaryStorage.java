@@ -67,14 +67,9 @@ public class SecondaryStorage  implements LinearHash {
 		return temp;
 	}
 		
-<<<<<<< 829ebada195e6c32217a6c3b4aec1fb558e0d3ee
-		return 0;
-	}
 
-     public int totalBuckets(){
-=======
 	public int totalBuckets(){
->>>>>>> 7f6ca4d6bd80fa1971ce31106ea0a2a1d98f8641
+
 		
 		int i,totalbuckets=0;
 		for(i= 0;i<store.size();i++){
