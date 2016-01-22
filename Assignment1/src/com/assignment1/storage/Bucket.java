@@ -6,6 +6,7 @@ public class Bucket {
 	private List<Long> list;
 	public static int capacity;
 	private int freeSpace;
+	private int depth;
 	
 	Bucket( ){
 		
@@ -44,6 +45,16 @@ public class Bucket {
 			return 1;
 		else
 			return 0;
+	}
+	public int  getDepth(){
+		
+		return depth;
+		
+	}
+	public void  updateDepth(int depth){
+		
+		this.depth = depth;
+		
 	}
 
 }
