@@ -1,0 +1,32 @@
+package com.assignment1.storage;
+import java.util.*;
+public class Bucket {
+	
+	private int nextBucket = -1;
+	private List<Long> list;
+	static int capacity;
+	
+	Bucket( ){
+		list = new ArrayList<Long>();
+	}
+	
+	public void addElemet(long key){
+		
+		list.add(key);	
+		
+	}
+	public int size(){
+	
+		return list.size();
+				
+	}
+	public int find(long key){
+		
+		if(list.contains(key))
+			
+			return 1;
+		else
+			return 0;
+	}
+
+}

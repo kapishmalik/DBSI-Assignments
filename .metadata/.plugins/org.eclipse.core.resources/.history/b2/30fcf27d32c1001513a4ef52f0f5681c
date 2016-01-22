@@ -1,0 +1,8 @@
+package com.assignment1.storage;
+
+public interface ExtendibleHashing {
+	
+	public void insertEH();
+	public void searchEH();
+	
+}

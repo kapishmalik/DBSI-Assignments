@@ -1,0 +1,14 @@
+package com.assignment1.storage;
+
+import java.util.Vector;
+
+public class SecondaryStorage  implements LinearHashaing {
+	
+	private Vector<Vector<Bucket>> store;
+	
+	SecondaryStorage(){
+		
+		store = new Vector<Vector<Bucket>>();
+	}
+
+}

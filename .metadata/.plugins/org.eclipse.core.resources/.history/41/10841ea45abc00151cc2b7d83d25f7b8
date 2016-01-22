@@ -1,0 +1,24 @@
+package com.assignment1.storage;
+
+import java.util.Vector;
+
+public class SecondaryStorage  implements LinearHash {
+	
+	private Vector<Vector<Bucket>> store;
+	
+	SecondaryStorage(int initialCapacity){
+		
+		store = new Vector<Vector<Bucket>(1)>(initialCapacity,1);
+	}
+	
+	public int insertLh(long key,long bucket){
+		
+		return 0;
+	}
+	
+	public int searchLh(long key){
+		
+		return 0;
+	}
+
+}

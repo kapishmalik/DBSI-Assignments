@@ -1,0 +1,52 @@
+package com.assignment1.storage;
+
+import java.util.Vector;
+
+public class SecondaryStorage  implements LinearHash {
+	
+	private Vector<Vector<Bucket>> store;
+	
+	SecondaryStorage(int initialCapacity){
+		
+		store = new Vector<Vector<Bucket>>(initialCapacity,1);
+		int i;		
+		for(i=0;i<initialCapacity;i++)
+		{
+			Vector<Bucket> bucket = new Vector<Bucket>(1,1);
+			Bucket b  = new Bucket();
+			bucket.add(b);
+			store.add(bucket);
+	    }
+		
+	}
+	
+	public String insertLh(long key,int bucket){
+		
+		int numberOfBucketAccess=1;
+		
+		numberOfBucketAccess = store.get(bucket).size();	
+		
+		if(store.get(bucket).get(numberOfBucketAccess-1).getfreespace() !=0){
+			
+			store.get(bucket).get(numberOfBucketAccess-1).addElemet(key);	
+			return String.valueOf(numberOfBucketAccess)+"|"+"0";
+			
+		}
+		else{
+			store.get(bucket).add(new Bucket());
+			store.get(bucket).get(numberOfBucketAccess-1).updateNextBucket(numberOfBucketAccess);
+			store.get(bucket).get(numberOfBucketAccess).addElemet(key);
+			return String.valueOf(numberOfBucketAccess+1)+"|"+"1";
+		}
+			
+		
+					
+	    
+	}
+	
+	public int searchLh(long key){
+		
+		return 0;
+	}
+
+}

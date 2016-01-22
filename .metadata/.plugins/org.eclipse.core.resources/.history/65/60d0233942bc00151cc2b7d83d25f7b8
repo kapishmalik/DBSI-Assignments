@@ -1,0 +1,50 @@
+package com.assignment1.simulation;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.util.*;
+
+public class Simulation {
+	
+	public static void main(String args[]){
+		
+		final long numberOfKeys = 100000;		
+		long counter = 0;
+		long temp;
+		FileWriter writer;
+		File f = new File("uniform.txt");
+		try{
+			
+			writer = new FileWriter(f);			
+		}catch(Exception e){
+			
+		}
+		
+		Random generator = new Random();
+		
+		while(counter <= numberOfKeys){
+			
+			temp = generator.nextInt(800000);
+			writer.write(temp);
+			
+			
+			
+			
+			
+		}
+		
+	}
+
+}
+
+class Simulate{
+	
+	
+	Simulate(){
+		
+//		Create two objects for LH and EH
+		
+		
+	}
+	
+}

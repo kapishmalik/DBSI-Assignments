@@ -1,0 +1,8 @@
+package com.assignment1.storage;
+
+public interface LinearHashing {
+	
+	public int insertLh(long key ,long bucket);
+	public int searchLh(long key);
+	
+}

@@ -1,0 +1,22 @@
+package com.assignment1.extendiblehashing;
+
+public class ExtendibleHashing {
+	
+	private int globalDepth;
+	
+	public void insert(){
+		
+	}
+	public void search(){
+		
+	}
+	
+	public void split(){
+		
+	}
+	public void simulateEH(){
+		
+	}
+	
+
+}
