@@ -15,6 +15,7 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 		{
 			Vector<Bucket> bucket = new Vector<Bucket>(1,1);
 			Bucket b  = new Bucket();
+			b.updateDepth(0);
 			bucket.add(b);
 			store.add(bucket);
 	    }
@@ -46,13 +47,14 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 					
 	    
 	}
-	public void expandAndRemove(int index){
+	public int expandAndRemove(int index){
 		
 		store.get(index).removeAllElements();
 		store.get(index).add(new Bucket());
 		Vector<Bucket> bucketVector = new Vector<Bucket>(1,1);
 		bucketVector.add(new Bucket());
 		store.add(bucketVector);
+		return store.size();
 		
 	}
 	
@@ -98,10 +100,36 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 		}
 
 
-	@Override
-	public void insertEH() {
+	/*insert the key in specified bucket by index */
+	public String insertEH(Long key,int index) {
 		// TODO Auto-generated method stub
+		Bucket b = store.get(index).get(0);
+//		b.addElemet(key);
+		if(b.getfreespace() !=0){
+			
+			b.addElemet(key);
+			return String.valueOf(b.getDepth())+"-"+"0";
+		}
+		else{
+			
+			return  String.valueOf(b.getDepth())+"-"+"1";
+		}
 		
+		
+		
+	}
+	public int getDirectoryEntry(int index,int pointerToDirectory){
+		
+		int iterations = index /Bucket.capacity;
+		int offset = index % Bucket.capacity;
+		int temp = pointerToDirectory;
+		
+		while (store.get(temp).get(0).getNextBucketPointer()!=-1 && iterations > 0){
+			
+			temp = store.get(temp).get(0).getNextBucketPointer();
+			iterations--;
+		}
+		return (int)store.get(temp).get(0).getElement(offset);
 	}
 
 

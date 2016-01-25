@@ -56,5 +56,13 @@ public class Bucket {
 		this.depth = depth;
 		
 	}
+	public int getNextBucketPointer(){
+		
+		return nextBucket;
+	}
+	public long getElement(int index){
+
+		return list.get(index);
+	}
 
 }
