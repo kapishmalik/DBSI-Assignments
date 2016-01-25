@@ -8,4 +8,5 @@ public interface ExtendibleHash {
 	public void searchEH();
 	public int expandAndRemove(int index);
 	public Vector<Bucket> getBucket(int n);
+	public int getDirectoryEntry(int index,int pointerToDirectory);
 }

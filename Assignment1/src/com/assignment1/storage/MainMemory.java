@@ -8,9 +8,10 @@ public class MainMemory {
 	private int directoryPointer  ;
 	public MainMemory()
 	{
-		globalDepth = 0;
-		mainMemoryArray = new int[1024];
-		size        = 1;
+		globalDepth        = 0;
+		mainMemoryArray    = new int[1024];
+		size               = 1;
+        directoryPointer   = -1;
 		mainMemoryArray[0] = 0;
 		
 	}
@@ -23,7 +24,7 @@ public class MainMemory {
 		this.globalDepth = globalDepth;
 	}
 
-	public int getDirectoryEntry(int index)
+	public int getDirectoryEntry(ExtendibleHash extendibleHashfile,int index)
 	{
 		if(index < 1024)
 		{
@@ -32,7 +33,8 @@ public class MainMemory {
 		else
 		{
 			//get from Secondary Storage
-			return 0;
+			return  extendibleHashfile.getDirectoryEntry(index-1024,directoryPointer);
+			
 		}
 	}
 	private void fetchDirectoryAndReMap(SecondaryStorage memory,int startIndex)
