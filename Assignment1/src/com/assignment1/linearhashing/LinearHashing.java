@@ -22,7 +22,7 @@ public class LinearHashing {
 	private LinearHash linearHashfile   ;
 	
 	//Constants
-	static private String FILENAME = "highbit.txt";
+	static private String FILENAME = "uniform.txt";
 //    private String fileName      ;
 	
     public LinearHashing(int m,int capacity)

@@ -3,7 +3,7 @@ package com.assignment1.storage;
 import java.util.List;
 import java.util.Vector;
 
-public class SecondaryStorage  implements LinearHash {
+public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 	
 	private Vector<Vector<Bucket>> store;
 	
@@ -96,5 +96,19 @@ public class SecondaryStorage  implements LinearHash {
 			return -1;
 			
 		}
+
+
+	@Override
+	public void insertEH() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void searchEH() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

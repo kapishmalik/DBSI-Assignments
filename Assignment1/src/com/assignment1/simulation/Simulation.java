@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.*;
 
+import com.assignment1.extendiblehashing.ExtendibleHashing;
 import com.assignment1.linearhashing.LinearHashing;
 
 public class Simulation {
@@ -104,8 +105,10 @@ class Simulate{
 		
 //		Create two objects for LH and EH
 		
-		LinearHashing lh = new LinearHashing(2,40);
-		lh.simulateLinearHashing();
+		//LinearHashing lh = new LinearHashing(2,40);
+		//lh.simulateLinearHashing();
+		ExtendibleHashing eh = new ExtendibleHashing(1,40);
+		eh.simulateExtendibleHashing();
 		
 	}
 	
