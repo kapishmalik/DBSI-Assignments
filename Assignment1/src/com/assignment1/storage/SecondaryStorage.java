@@ -47,14 +47,14 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 					
 	    
 	}
-	public int expandAndRemove(int index){
+	public void expandAndRemove(int index){
 		
 		store.get(index).removeAllElements();
 		store.get(index).add(new Bucket());
 		Vector<Bucket> bucketVector = new Vector<Bucket>(1,1);
 		bucketVector.add(new Bucket());
 		store.add(bucketVector);
-		return store.size();
+//		return store.size();
 		
 	}
 	
@@ -130,6 +130,19 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 			iterations--;
 		}
 		return (int)store.get(temp).get(0).getElement(offset);
+	}
+	public int expandAndRemoveEH(int index){
+		
+		int depth = store.get(index).get(0).getDepth();
+		store.get(index).removeAllElements();
+		store.get(index).add(new Bucket());
+		store.get(index).get(0).updateDepth(depth+1);
+		Vector<Bucket> bucketVector = new Vector<Bucket>(1,1);
+		bucketVector.add(new Bucket());
+		bucketVector.get(0).updateDepth(depth+1);
+		store.add(bucketVector);
+		return (store.size()-1);
+
 	}
 
 

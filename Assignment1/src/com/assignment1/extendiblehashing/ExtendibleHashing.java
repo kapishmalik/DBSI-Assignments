@@ -96,7 +96,7 @@ public class ExtendibleHashing {
 	public void splitBucket(int index,long key)
 	{
 		Vector<Bucket> bucketVector = extendibleHashfile.getBucket(index)      ;
-		int newBucketIndex          = extendibleHashfile.expandAndRemove(index);
+		int newBucketIndex          = extendibleHashfile.expandAndRemoveEH(index);
 		//mainMemory.updateDirectoryEntry();
 	}
 	public void search(){
