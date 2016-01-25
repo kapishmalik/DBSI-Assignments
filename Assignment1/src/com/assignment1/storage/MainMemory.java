@@ -14,6 +14,27 @@ public class MainMemory {
 		mainMemoryArray[0] = 0;
 		
 	}
+	
+	public int getGlobalDepth() {
+		return globalDepth;
+	}
+
+	public void setGlobalDepth(int globalDepth) {
+		this.globalDepth = globalDepth;
+	}
+
+	public int getDirectoryEntry(int index)
+	{
+		if(index < 1024)
+		{
+			return mainMemoryArray[index];
+		}
+		else
+		{
+			//get from Secondary Storage
+			return 0;
+		}
+	}
 	private void fetchDirectoryAndReMap(SecondaryStorage memory,int startIndex)
 	{
 		int i,flag = 0;

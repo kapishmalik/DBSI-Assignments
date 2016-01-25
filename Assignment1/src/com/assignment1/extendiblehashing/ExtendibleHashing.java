@@ -11,15 +11,23 @@ import com.assignment1.storage.SecondaryStorage;
 
 public class ExtendibleHashing {
 	
-	private MainMemory     mainMemory          ;
-	private ExtendibleHash extendibleHashfile  ;
+	private int totalInsertDiskAccess         ;
+	private int totalSearchDiskAccess         ;
+	private int totalSplitCost                ;
+	private MainMemory     mainMemory         ;
+	private ExtendibleHash extendibleHashfile ;
+	
+	//constant 
 	static private String FILENAME = "uniform.txt";
 
 	public ExtendibleHashing(int m, int capacity){
 		
-		Bucket.capacity    = capacity               ;
-		extendibleHashfile = new SecondaryStorage(m);
-		mainMemory         = new MainMemory();
+		totalSearchDiskAccess = 0                      ;
+		totalSplitCost        = 0                      ;
+		totalInsertDiskAccess = 0                      ;
+		Bucket.capacity       = capacity               ;
+		extendibleHashfile    = new SecondaryStorage(m);
+		mainMemory            = new MainMemory()       ;
 	}	
 	private String padBinaryKey(Long key)
 	{
@@ -33,8 +41,20 @@ public class ExtendibleHashing {
 		 }
 		return binaryKey;
 	}
+	private int getHashValue(String binaryKey)
+	{
+		if(mainMemory.getGlobalDepth() == 0)
+		{
+		   return 0;
+		}
+		else
+		{
+			String binaryHashValue = binaryKey.substring(0,mainMemory.getGlobalDepth());
+			return Integer.parseInt(binaryHashValue, 2);
+		}
+	}
 	public void insert(){
-		FileInputStream in = null;
+		
 		 Scanner scanner;
 		 try {
 				scanner = new Scanner(new File(FILENAME));
@@ -42,8 +62,8 @@ public class ExtendibleHashing {
 				 {
 					 long key         = scanner.nextLong();
 					 String binaryKey = padBinaryKey(key);
-					 
-					 System.out.println("I am waiting for Venky to Complete. Record = "+key+"  "+binaryKey+"  "+binaryKey.length());
+				     int hashValue = getHashValue(binaryKey);
+				     System.out.println("Hash Value is "+hashValue);
 				     
 				 }
 		 }

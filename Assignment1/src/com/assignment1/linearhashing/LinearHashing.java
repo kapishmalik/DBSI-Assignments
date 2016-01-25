@@ -67,8 +67,6 @@ public class LinearHashing {
 	
 	private void insert()
 	{
-		
-		 FileInputStream in = null;
 		 Scanner scanner;
 		 
 		try {
