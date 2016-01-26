@@ -315,7 +315,7 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 			
 		}
 		
-	public	List<Long> directoryEntries(int pointer){
+	public	List<Long> getDirectoryEntries(int pointer){
 		
 		List<Long> list = new ArrayList<Long>();
 		

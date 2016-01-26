@@ -65,32 +65,39 @@ public class ExtendibleHashing {
 					 long key         = scanner.nextLong();
 					 String binaryKey = padBinaryKey(key);
 				     int hashValue = getHashValue(binaryKey);
-				     System.out.println("Hash Value is "+hashValue);
-				     //get entry from Directory Entry
+				     //get index from Directory Entry
 				     int index = mainMemory.getDirectoryEntry(extendibleHashfile,hashValue);
 				     String DepthAndStatus = extendibleHashfile.insertEH(key,index);
 				     String[] del   = DepthAndStatus.split("-");
-				     int localDepth = Integer.parseInt(del[0]);
+				     int localDepth = Integer.parseInt(del[2]);
 				     int status     = Integer.parseInt(del[1]); 
+				     int accessCost = Integer.parseInt(del[0]);
+				     System.out.println(DepthAndStatus);
 				     if(status == 1)
 				     {
 				       if(mainMemory.getGlobalDepth() > localDepth)
 				       {
 				        // do something  -  add one new Bucket
-				    	   splitBucket(index,key);
+				    	   System.out.println("Global depth greater than local depth"+localDepth+"  "+mainMemory.getGlobalDepth());
+				    	   splitBucket(index);
 				          
 				       }
 				       else
 				       {
 				        //do something   - Double Size of Directory and add one new Bucket
-				       
+				    	   //mainMemory.doubleDirectory(extendibleHashfile);
+				    	   System.out.println("Global depth equal to local depth"+localDepth+"  "+mainMemory.getGlobalDepth());
+				    	   splitBucketAndDoubleDirectorySize(index);
+				    	   
 				       }
 				     }
 				     else
 				     {
+				    	 // Successful Insertion - Go to Next record
+				    	 System.out.println("Record inserted Successfully");
 				    	 
 				     }
-				     
+				     totalInsertDiskAccess += accessCost;
 				 }
 		 }
 		 catch (Exception e) {
@@ -99,18 +106,67 @@ public class ExtendibleHashing {
 			}
 		 
 	}
-	public void splitBucket(int bucketIndex,long key)
+	private void splitBucketAndDoubleDirectorySize(int bucketIndex) {
+		// TODO Auto-generated method stub
+		Vector<Bucket> bucketVector = extendibleHashfile.getBucket(bucketIndex)        ;
+		int localDepth              = bucketVector.get(0).getDepth()                   ;
+		int newBucketIndex          = extendibleHashfile.expandAndRemoveEH(bucketIndex);
+		int splitCost               = 2;
+		System.out.println("New Bucket Index and Old Bucket Index "+newBucketIndex+"  "+bucketIndex);
+		splitCost += mainMemory.doubleDirectory(extendibleHashfile, bucketIndex, newBucketIndex);
+		mainMemory.printMainMemory();
+		for(int i=0;i<bucketVector.size();i++)
+	     {
+			 List<Long> reHashKeys = bucketVector.get(i).getBucketList();
+			 System.out.println("Re hashing Keys are ");
+			 System.out.println(" "+reHashKeys);
+			 for(int j=0;j<reHashKeys.size();j++)
+			{
+			   String binaryKey = padBinaryKey(reHashKeys.get(j));
+		       int hashValue = getHashValue(binaryKey);
+		       //System.out.println("Hash Value is "+hashValue);
+		       //get entry from Directory Entry
+		       int index = mainMemory.getDirectoryEntry(extendibleHashfile,hashValue);
+		       String cost = extendibleHashfile.insertEH(reHashKeys.get(j),index);
+		       String[] del   = cost.split("-");
+		       int accessCost = Integer.parseInt(del[0]);
+		       //System.out.println(cost);
+		       splitCost += accessCost;
+			} 
+	     }
+		this.totalSplitCost += splitCost;
+		
+	}
+	public void splitBucket(int bucketIndex)
 	{
 		Vector<Bucket> bucketVector = extendibleHashfile.getBucket(bucketIndex)        ;
 		int localDepth              = bucketVector.get(0).getDepth()                   ;
 		int newBucketIndex          = extendibleHashfile.expandAndRemoveEH(bucketIndex);
-		mainMemory.updateDirectoryEntries(extendibleHashfile,newBucketIndex,bucketIndex,localDepth);
-		int i;
-		for(i=0;i<bucketVector.size();i++)
+		int splitCost = 2;
+		System.out.println("New Bucket Index and Old Bucket Index "+newBucketIndex+"  "+bucketIndex);
+		splitCost += mainMemory.updateDirectoryEntries(extendibleHashfile,newBucketIndex,bucketIndex,localDepth);
+		mainMemory.printMainMemory();
+		for(int i=0;i<bucketVector.size();i++)
 	     {
 			 List<Long> reHashKeys = bucketVector.get(i).getBucketList();
-			 System.out.print(" "+reHashKeys);
+			 //System.out.println(" "+reHashKeys);
+			 System.out.println("Re hashing Keys are ");
+			 System.out.println(" "+reHashKeys);
+			 for(int j=0;j<reHashKeys.size();j++)
+			{
+			   String binaryKey = padBinaryKey(reHashKeys.get(j));
+		       int hashValue = getHashValue(binaryKey);
+		       //System.out.println("Hash Value is "+hashValue);
+		       //get entry from Directory Entry
+		       int index = mainMemory.getDirectoryEntry(extendibleHashfile,hashValue);
+		       String cost = extendibleHashfile.insertEH(reHashKeys.get(j),index);
+		       String[] del   = cost.split("-");
+		       int accessCost = Integer.parseInt(del[0]);
+		       //System.out.println(cost);
+		       splitCost += accessCost;
+			} 
 	     }
+		this.totalSplitCost += splitCost;
 		
 	}
 	public void search(){
@@ -121,7 +177,7 @@ public class ExtendibleHashing {
 		
 	}
 	public void simulateExtendibleHashing(){
-		System.out.println("I am inside simulate LH");
+		System.out.println("I am inside simulate EH");
 //		Bucket.capacity = 10;
 		insert();
 	}

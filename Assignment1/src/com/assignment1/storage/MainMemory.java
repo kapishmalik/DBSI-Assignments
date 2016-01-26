@@ -1,5 +1,7 @@
 package com.assignment1.storage;
 
+import java.util.List;
+
 public class MainMemory {
 
 	private int mainMemoryArray[] ;
@@ -37,33 +39,7 @@ public class MainMemory {
 			
 		}
 	}
-	private void fetchDirectoryAndReMap(SecondaryStorage memory,int startIndex)
-	{
-		int i,flag = 0;
-		int []buffer;
-		buffer = new int[this.size];
-		if(size > 1024)
-		{
-			for(i=0;i<1024;i++)
-		   {
-				buffer[i] = mainMemoryArray[i];
-	       }
-			
-			
-		}
-		if(size < 1024)
-		{
-			for(i=0;i<1024;i++)
-			{
-				buffer[i] = mainMemoryArray[i];
-		    }
-			
-		}
-		// Secondary Memory function will be there to get directory block
-		
-		
-	}
-  
+	
 	public int getDirectoryIndex(ExtendibleHash extendibleHashfile,int bucketIndex)
 	{
 		for(int i=0;i<1024;i++)
@@ -77,13 +53,13 @@ public class MainMemory {
 		return extendibleHashfile.getDirectoryIndex(bucketIndex,directoryPointer);
 		
 	}
-	public void updateDirectoryEntries(ExtendibleHash extendibleHashfile,int indexOfBucket,int bucketIndex,int localDepth) {
+	public int updateDirectoryEntries(ExtendibleHash extendibleHashfile,int indexOfBucket,int bucketIndex,int localDepth) {
 		
-		int directoryIndex = 0;
-		//directoryIndex = getDirectoryIndex(extendibleHashfile,bucket);
+		int directoryIndex = getDirectoryIndex(extendibleHashfile,bucketIndex);
 		int startPt = (int) ((Math.pow(2, globalDepth - localDepth))/2)+directoryIndex;
 		int endPt   = ((int) (Math.pow(2, globalDepth - localDepth))) - 1+directoryIndex;
 		int i       = 0;
+		int counter = 0;
 		if(startPt < 1024 && endPt < 1024)
 		{
 			for(i=startPt;i<=endPt;i++)
@@ -99,11 +75,125 @@ public class MainMemory {
 			}
 			//update directery entry in Main Memory
 			extendibleHashfile.updateDirectoryEntries(0,endPt-1023,directoryPointer,indexOfBucket);
+			counter = (endPt - 1024)/Bucket.capacity;
 		}
 		else
 		{
 		    extendibleHashfile.updateDirectoryEntries(startPt-1024,endPt-startPt+1,directoryPointer,indexOfBucket);	
+		    counter = (endPt-startPt)/Bucket.capacity + (startPt-1024)/Bucket.capacity;
+		}
+		return counter;
+	}
+
+	public void printMainMemory()
+	{
+		int temp;
+		if(size > 1024)
+		{
+			temp = 1024;
+			System.out.println("Size Print > 1024"+this.size);
+		}
+		else
+		{
+			temp = size;
+		}
+		for(int i=0;i<temp;i++)
+		{
+			System.out.println("Main Memory index value i is"+i+" "+mainMemoryArray[i]);
 		}
 	}
+	private void fetchDirectoryAndReMap(ExtendibleHash extendibleHashfile,int prevSize,int prevGlobalDepth,int oldBucketIndex,int newBucketIndex,List<Long> secondaryStorageDirectory)
+	{
+		
+		int []buffer;
+		buffer = new int[prevSize];
+		int counter = 0;
+		if(size > 1024)
+		{
+			for(int i=0;i<1024;i++)
+		   {
+				buffer[i] = mainMemoryArray[i];
+	       }
+			int j=0;
+			for(int i=1024;i<secondaryStorageDirectory.size()+1024;i++)
+			{
+				buffer[i] = (int)secondaryStorageDirectory.get(j).longValue();
+				j++;
+			}
+			System.out.println("Size is greater than 1024 PrevSize and Buffer are"+prevSize+"  "+buffer.length);
+		   //update Directory in Main Memory and in Secondary Storage too.	
+			
+		}
+		if(size <= 1024)
+		{
+			for(int i=0;i<prevSize;i++)
+			{
+				buffer[i] = mainMemoryArray[i];
+		    }
+			//read buffer value and update main Memory Directory Entry Array
+			int j = 0;
+			System.out.println("prev Size is "+prevSize);
+			int accum = 0;
+			for(int i=0;i<prevSize;)
+			{
+			     int localDepth = extendibleHashfile.getLocalDepth(buffer[i]);
+			     System.out.println(this.globalDepth +"is global Depth and Local Depth is "+localDepth);
+			     int noOfRep    = (int) (Math.pow(2, (this.globalDepth - localDepth)));
+			     
+			     accum +=noOfRep;
+			     int temp = buffer[i];
+			     
+			     if(temp == oldBucketIndex)
+			     {
+			    	 System.out.println("J value is "+j);
+			    	 mainMemoryArray[j] = temp;
+			    	 j++;
+			    	 mainMemoryArray[j] = newBucketIndex;
+			    	 i++;
+			    	 j++;
+			    	 
+			     }
+			     else
+			     {
+			    	 System.out.println("Total Repititions are "+accum);
+			    	 
+			     while(noOfRep > 0)
+			     {
+			    	// System.out.println("J value is in while and no of rep are "+j+"  "+noOfRep);
+			    	 mainMemoryArray[j] = temp;
+			    	 j++;
+			    	 noOfRep --;
+			     }
+			    i += (int) Math.pow(2,prevGlobalDepth - localDepth);
+			   }
+		}
+			
+			
+		}
+		// Secondary Memory function will be there to get directory block
+		
+}  
+	public int doubleDirectory(ExtendibleHash extendibleHashfile,int oldBucketIndex,int newBucketIndex) {
+		// TODO Auto-generated method stub
+		int prevGlobalDepth   = this.globalDepth;
+		this.globalDepth     +=  1;
+		int prevSize          = this.size;
+		this.size            *=  2;
+		int count = 0;
+		List<Long> secondaryStorageDirectory = null;
+		if(size > 1024)
+		{
+			//need to create directory entry buckets.
+			secondaryStorageDirectory = extendibleHashfile.getDirectoryEntries(directoryPointer);
+			directoryPointer = extendibleHashfile.createDirectoryMemory(directoryPointer,size - prevSize);
+		
+		}
+		else
+		{
+			fetchDirectoryAndReMap(extendibleHashfile,prevSize,prevGlobalDepth,oldBucketIndex,newBucketIndex,secondaryStorageDirectory);
+		}
+		return count;
+	}
+	
 	
 }
