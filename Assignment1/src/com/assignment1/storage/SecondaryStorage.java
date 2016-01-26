@@ -337,8 +337,88 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 		}
 		
 	}
+//	public int updateDirectoryEntries(int bufferPointer,int[] buffer,int directoryPointer,int newGlobalDepth,int prevGlobalDepth,int oldBucketIndex){
+//		
+//		int bucketAccesses =0;
+//		int temp = directoryPointer;
+//		int i = bufferPointer;
+//		int listIndex=0;
+//		
+//		while(i < buffer.length && temp != -1 ){
+//			
+//			
+//			int localDepth = getLocalDepth(buffer[i]);
+//		     System.out.println(newGlobalDepth +"is global Depth and Local Depth is "+localDepth);
+//		     int noOfRep    = (int) (Math.pow(2, (newGlobalDepth - localDepth)));
+//		     int bufferEntry = buffer[i];
+//		     int buckets = noOfRep /Bucket.capacity;
+//		     int offset = noOfRep % Bucket.capacity;
+//		     
+//		     while(buckets > 0 ){
+//		    	 Bucket b= store.get(temp).get(0);
+//		    	 for(int j=0;j<Bucket.capacity;j++){
+//		    		 
+//		    		 b.updateElement(j, bufferEntry);		    		 
+//		    	 }
+//		    	 bucket--;
+//		     }
+//		     if(bufferEntry == oldBucketIndex){
+//		    	 
+//		     }
+//		     else{
+//		    	 
+//		    	 while( noOfRep > 0 &){
+//		    		 
+//		    	 }
+//		    	 
+//		     }
+//					
+//		}
+//		
+//		return bucketAccesses;
+//	}
+//		
+	
+	public int updateDirectoryEntries(int[] buffer,int pointer){
 		
+		int bucketAccesses =0;
+		int temp = pointer;
+		int j = 1024;
+		int counter=0;
+		Bucket b;
 		
+		int buckets = (buffer.length -1024)/Bucket.capacity;
+		int offset = (buffer.length -1024)%Bucket.capacity;
+		
+		while(buckets >0 ){
+			
+			counter = 0;
+			b= store.get(temp).get(0);
+			bucketAccesses++;			
+			while(counter < Bucket.capacity ){
+				
+				b.updateElement(counter, buffer[j]);
+				j++;
+				counter++;
+				
+			}
+			temp = b.getNextBucketPointer();
+			buckets--;
+		
+		}
+		counter = 0;
+		b= store.get(temp).get(0);
+		
+		while(counter < offset){
+			
+			b.updateElement(counter, buffer[j]);
+			j++;	
+			counter++;
+			
+		}	
+		
+		return (bucketAccesses+1);
+	}
 		
 	
 
