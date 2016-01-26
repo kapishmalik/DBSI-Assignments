@@ -1,6 +1,7 @@
 package com.assignment1.storage;
 
 import java.awt.font.NumericShaper;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -252,9 +253,90 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 		return length;
 		
 	}
+	public int getLocalDepth(int bucketIndex){
+		
+		return store.get(bucketIndex).get(0).getDepth();
+	}
 		
 		
+		public int createDirectoryMemory(int index,int capacity){
+			
+			
+			int temp;
+			int buckets;
+			int directoryHeader;
+			if(index == -1){
+				directoryHeader = store.size();
+				temp = directoryHeader;
+				buckets = (capacity /Bucket.capacity)+1;
+				
+				while(buckets >0){
+					
+					Bucket b = new Bucket();
+					b.updateNextBucket(temp+1);
+					temp++;
+					Vector<Bucket> v = new Vector<Bucket>(1,1);
+					v.add(b);
+					store.add(v);	
+					buckets--;
+					
+				}
+				store.get(store.size()-1).get(0).updateNextBucket(-1);
+				
+			}
+			else{
+				temp = index;
+				directoryHeader = index;
+				
+				while(store.get(temp).get(0).getNextBucketPointer() != -1){
+					
+					temp = store.get(temp).get(0).getNextBucketPointer();					
+				}
+				capacity -=  store.get(temp).get(0).getfreespace();
+				buckets =  (capacity /Bucket.capacity)+1;
+				store.get(temp).get(0).updateNextBucket(store.size());
+				temp = store.size();
+				while(buckets >0){
+
+					Bucket b = new Bucket();
+					b.updateNextBucket(temp+1);
+					temp++;
+					Vector<Bucket> v = new Vector<Bucket>(1,1);
+					v.add(b);
+					store.add(v);	
+					buckets--;
+
+				}		
+				store.get(store.size()-1).get(0).updateNextBucket(-1);
+				
+			}
+			
+			return directoryHeader;
+			
+		}
 		
+	public	List<Long> directoryEntries(int pointer){
+		
+		List<Long> list = new ArrayList<Long>();
+		
+		if(pointer == -1){
+			
+			return list;
+		}
+		else{
+			
+			int temp = pointer;
+			while(temp != -1){
+				
+				Bucket b = store.get(temp).get(0);
+				list.addAll(b.getBucketList());
+				temp = store.get(temp).get(0).getNextBucketPointer(); 				
+			}
+			
+			return list;
+		}
+		
+	}
 		
 		
 		
