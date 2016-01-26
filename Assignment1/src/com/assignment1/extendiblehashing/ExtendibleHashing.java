@@ -2,6 +2,7 @@ package com.assignment1.extendiblehashing;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -76,6 +77,7 @@ public class ExtendibleHashing {
 				       if(mainMemory.getGlobalDepth() > localDepth)
 				       {
 				        // do something  -  add one new Bucket
+				    	   splitBucket(index,key);
 				          
 				       }
 				       else
@@ -83,6 +85,10 @@ public class ExtendibleHashing {
 				        //do something   - Double Size of Directory and add one new Bucket
 				       
 				       }
+				     }
+				     else
+				     {
+				    	 
 				     }
 				     
 				 }
@@ -93,11 +99,19 @@ public class ExtendibleHashing {
 			}
 		 
 	}
-	public void splitBucket(int index,long key)
+	public void splitBucket(int bucketIndex,long key)
 	{
-		Vector<Bucket> bucketVector = extendibleHashfile.getBucket(index)      ;
-		int newBucketIndex          = extendibleHashfile.expandAndRemoveEH(index);
-		//mainMemory.updateDirectoryEntry();
+		Vector<Bucket> bucketVector = extendibleHashfile.getBucket(bucketIndex)        ;
+		int localDepth              = bucketVector.get(0).getDepth()                   ;
+		int newBucketIndex          = extendibleHashfile.expandAndRemoveEH(bucketIndex);
+		mainMemory.updateDirectoryEntries(extendibleHashfile,newBucketIndex,bucketIndex,localDepth);
+		int i;
+		for(i=0;i<bucketVector.size();i++)
+	     {
+			 List<Long> reHashKeys = bucketVector.get(i).getBucketList();
+			 System.out.print(" "+reHashKeys);
+	     }
+		
 	}
 	public void search(){
 		

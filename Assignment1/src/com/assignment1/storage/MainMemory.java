@@ -63,4 +63,47 @@ public class MainMemory {
 		
 		
 	}
+  
+	public int getDirectoryIndex(ExtendibleHash extendibleHashfile,int bucketIndex)
+	{
+		for(int i=0;i<1024;i++)
+		{
+			if(mainMemoryArray[i] == bucketIndex)
+			{
+				return i;
+			}
+		}
+		
+		return extendibleHashfile.getDirectoryIndex(bucketIndex,directoryPointer);
+		
+	}
+	public void updateDirectoryEntries(ExtendibleHash extendibleHashfile,int indexOfBucket,int bucketIndex,int localDepth) {
+		
+		int directoryIndex = 0;
+		//directoryIndex = getDirectoryIndex(extendibleHashfile,bucket);
+		int startPt = (int) ((Math.pow(2, globalDepth - localDepth))/2)+directoryIndex;
+		int endPt   = ((int) (Math.pow(2, globalDepth - localDepth))) - 1+directoryIndex;
+		int i       = 0;
+		if(startPt < 1024 && endPt < 1024)
+		{
+			for(i=startPt;i<=endPt;i++)
+			{
+				mainMemoryArray[i] = indexOfBucket;
+			}
+		}
+		else if(startPt < 1024)
+		{
+			for(i=startPt;i<1024;i++)
+			{
+				mainMemoryArray[i] = indexOfBucket;
+			}
+			//update directery entry in Main Memory
+			extendibleHashfile.updateDirectoryEntries(0,endPt-1023,directoryPointer,indexOfBucket);
+		}
+		else
+		{
+		    extendibleHashfile.updateDirectoryEntries(startPt-1024,endPt-startPt+1,directoryPointer,indexOfBucket);	
+		}
+	}
+	
 }

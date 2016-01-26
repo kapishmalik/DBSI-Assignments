@@ -10,4 +10,6 @@ public interface ExtendibleHash {
 	public int expandAndRemoveEH(int index);
 	public Vector<Bucket> getBucket(int n);
 	public int getDirectoryEntry(int index,int pointerToDirectory);
+	public void updateDirectoryEntries(int startIndex,int numberOfRepetitions,int pointer,int indexOfBucket );
+	public int getDirectoryIndex(int bucketIndex, int directoryPointer);
 }
