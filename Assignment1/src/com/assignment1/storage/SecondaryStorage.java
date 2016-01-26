@@ -1,5 +1,6 @@
 package com.assignment1.storage;
 
+import java.awt.font.NumericShaper;
 import java.util.List;
 import java.util.Vector;
 
@@ -144,6 +145,69 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 		return (store.size()-1);
 
 	}
+	
+	public void updateDirectoryEntries(int startIndex,int numberOfRepetitions,int pointer,int indexOfBucket ){
+		
+		int iterations = startIndex /Bucket.capacity;
+		int offset = startIndex % Bucket.capacity;
+		int temp = pointer;
+		
+//		if(iterations ==0){
+//			while(numberOfRepetitions > 0){
+//			
+//				Bucket b = store.get(pointer).get(0);
+//				int band = b.size() - offset+1;
+//				if(band-numberOfRepetitions >0){
+//					
+//				}
+//			}
+//			
+//			
+//		}
+		while (store.get(temp).get(0).getNextBucketPointer()!=-1 && iterations > 0){
+
+			temp = store.get(temp).get(0).getNextBucketPointer();
+			iterations--;
+		}
+		Bucket s = store.get(temp).get(0);
+		if((s.size() - offset < numberOfRepetitions))
+		{
+		for(int i=offset;i<Bucket.capacity;i++)
+		{
+			store.get(temp).get(0).updateElement(i,indexOfBucket);
+		}
+        int counter = (numberOfRepetitions-(Bucket.capacity - offset))/Bucket.capacity;
+        offset      = (numberOfRepetitions-(Bucket.capacity - offset))%Bucket.capacity;
+        while(counter > 0)
+		{
+			for(int i=0;i<Bucket.capacity;i++)
+			{
+				store.get(temp).get(0).updateElement(i,indexOfBucket);
+			}
+			temp = store.get(temp).get(0).getNextBucketPointer();
+			counter --;
+		}
+        for(int i=0;i<offset;i++)
+        {
+        	store.get(temp).get(0).updateElement(i,indexOfBucket);
+        }
+		}
+		else
+		{
+			for(int i=offset;i<offset + numberOfRepetitions;i++)
+			{
+				store.get(temp).get(0).updateElement(i,indexOfBucket);
+			}	
+		}
+		
+}
+		
+		
+		
+		
+		
+		
+	
 
 
 	@Override

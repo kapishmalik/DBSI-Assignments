@@ -20,6 +20,10 @@ public class Bucket {
 		freeSpace = Bucket.capacity -list.size(); 
 		
 	}
+	public void updateElement(int index,long bucketIndex)
+	{
+		list.set(index, bucketIndex);
+	}
 	public List<Long> getBucketList()
 	{
 		return list;
