@@ -4,7 +4,7 @@ import java.util.Vector;
 
 public interface ExtendibleHash {
 	
-	public String insertEH(Long key,int index);
+	public String insertEH(long key,int index);
 	public void searchEH();
 //	public int expandAndRemove(int index);
 	public int expandAndRemoveEH(int index);

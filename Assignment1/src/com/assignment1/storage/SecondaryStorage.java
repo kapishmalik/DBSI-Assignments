@@ -100,25 +100,47 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 			
 		}
 
+/*-------------------------------------------EHashing---------------------------------------------------------------------*/
+//	/*insert the key in specified bucket by index */
+//	public String insertEH(Long key,int index) {
+//		// TODO Auto-generated method stub
+//		Bucket b = store.get(index).get(0);
+////		b.addElemet(key);
+//		if(b.getfreespace() !=0){
+//			
+//			b.addElemet(key);
+//			return String.valueOf(b.getDepth())+"-"+"0";
+//		}
+//		else{
+//			
+//			return  String.valueOf(b.getDepth())+"-"+"1";
+//		}
+				
+//	}
+	 
 
-	/*insert the key in specified bucket by index */
-	public String insertEH(Long key,int index) {
-		// TODO Auto-generated method stub
-		Bucket b = store.get(index).get(0);
-//		b.addElemet(key);
-		if(b.getfreespace() !=0){
+	 public String insertEH(long key,int bucket){
 			
-			b.addElemet(key);
-			return String.valueOf(b.getDepth())+"-"+"0";
-		}
-		else{
+			int numberOfBucketAccess=1;
+			Vector<Bucket> bucketVector =  store.get(bucket);
+			//System.out.println(key+" "+bucket);
+			numberOfBucketAccess =bucketVector.size();	
 			
-			return  String.valueOf(b.getDepth())+"-"+"1";
+			if(bucketVector.get(numberOfBucketAccess-1).getfreespace() !=0){
+				
+				bucketVector.get(numberOfBucketAccess-1).addElemet(key);	
+				return String.valueOf(numberOfBucketAccess)+"-"+"0"+"-"+bucketVector.get(numberOfBucketAccess-1).getDepth();
+				
+			}
+			else{
+				bucketVector.add(new Bucket());
+				bucketVector.get(numberOfBucketAccess-1).updateNextBucket(numberOfBucketAccess);
+				bucketVector.get(numberOfBucketAccess).addElemet(key);
+//				bucketVector.get(numberOfBucketAccess).updateDepth(depth);
+				return String.valueOf(numberOfBucketAccess+1)+"-"+"1"+"-"+bucketVector.get(0).getDepth();
+			}
 		}
-		
-		
-		
-	}
+				
 	public int getDirectoryEntry(int index,int pointerToDirectory){
 		
 		int iterations = index /Bucket.capacity;
@@ -245,4 +267,7 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 		
 	}
 
+
+	
+	
 }
