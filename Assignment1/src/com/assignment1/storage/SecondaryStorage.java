@@ -201,6 +201,35 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 		}
 		
 }
+	
+	public int getDirectoryIndex(int bucketIndex,int index){
+		
+		int temp =index; 
+		int counter =0;
+		int length=0;
+		List<Long> list= null;
+//				store.get(temp).get(0).getNextBucketPointer();
+		while(temp !=-1){
+			
+			Bucket b = store.get(temp).get(0);
+			list = b.getBucketList();
+			if(! list.contains(bucketIndex)){
+				
+				counter++;
+				temp = store.get(temp).get(0).getNextBucketPointer();
+			}
+			else{
+				
+				length= counter*Bucket.capacity + list.indexOf(bucketIndex)+1024;
+				break;
+			}
+				
+			
+		}
+		
+		return length;
+		
+	}
 		
 		
 		
