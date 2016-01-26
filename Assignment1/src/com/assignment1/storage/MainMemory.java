@@ -22,19 +22,21 @@ public class MainMemory {
 		return globalDepth;
 	}
 
-	public void setGlobalDepth(int globalDepth) {
+	/*public void setGlobalDepth(int globalDepth) {
 		this.globalDepth = globalDepth;
-	}
+	}*/
 
 	public int getDirectoryEntry(ExtendibleHash extendibleHashfile,int index)
 	{
 		if(index < 1024)
 		{
 			return mainMemoryArray[index];
+			
 		}
 		else
 		{
 			//get from Secondary Storage
+			//System.out.println("Global Depth"+this.globalDepth+" Passing index "+index);
 			return  extendibleHashfile.getDirectoryEntry(index-1024,directoryPointer);
 			
 		}
@@ -91,7 +93,7 @@ public class MainMemory {
 		if(size > 1024)
 		{
 			temp = 1024;
-			System.out.println("Size Print > 1024"+this.size);
+			//System.out.println("Size Print > 1024"+this.size);
 		}
 		else
 		{
@@ -99,14 +101,25 @@ public class MainMemory {
 		}
 		for(int i=0;i<temp;i++)
 		{
-			System.out.println("Main Memory index value i is"+i+" "+mainMemoryArray[i]);
+			//System.out.println("Main Memory index value i is"+i+" "+mainMemoryArray[i]);
 		}
 	}
-	private void fetchDirectoryAndReMap(ExtendibleHash extendibleHashfile,int prevSize,int prevGlobalDepth,int oldBucketIndex,int newBucketIndex,List<Long> secondaryStorageDirectory)
+	private void printTotalBuffer(int []totalBuffer)
+	{
+		System.out.println("Total Buffer Length"+totalBuffer.length+"  "+this.size);
+		for(int i=0;i<this.size;i++)
+		{
+			System.out.print("  "+totalBuffer[i]+"  ");
+		}
+		System.out.println(" ");
+	}
+	private int fetchDirectoryAndReMap(ExtendibleHash extendibleHashfile,int prevSize,int prevGlobalDepth,int oldBucketIndex,int newBucketIndex,List<Long> secondaryStorageDirectory)
 	{
 		
 		int []buffer;
+		int []totalBuffer;
 		buffer = new int[prevSize];
+		totalBuffer = new int[this.size];
 		int counter = 0;
 		if(size > 1024)
 		{
@@ -120,8 +133,47 @@ public class MainMemory {
 				buffer[i] = (int)secondaryStorageDirectory.get(j).longValue();
 				j++;
 			}
-			System.out.println("Size is greater than 1024 PrevSize and Buffer are"+prevSize+"  "+buffer.length);
+			//System.out.println("Size is greater than 1024 PrevSize and Buffer are"+prevSize+"  "+buffer.length);
 		   //update Directory in Main Memory and in Secondary Storage too.	
+			int i = 0;
+			    j = 0;
+			while(j < totalBuffer.length)
+			{
+				 int localDepth = extendibleHashfile.getLocalDepth(buffer[i]);
+			    // System.out.println(this.globalDepth +"is global Depth and Local Depth is "+localDepth);
+			     int noOfRep    = (int) (Math.pow(2, (this.globalDepth - localDepth)));
+			     int temp = buffer[i];
+			     if(temp == oldBucketIndex)
+			     {
+			    	// System.out.println("J value is "+j);
+			    	 if(j<1024)
+			    	 mainMemoryArray[j] = temp;
+			    	 totalBuffer[j]  = temp;
+			    	 j++;
+			    	 if(j<1024)
+			    	 mainMemoryArray[j] = newBucketIndex;
+			    	 totalBuffer[j]   = temp;
+			    	 i++;
+			    	 j++;
+			    	 
+			     }
+			     else
+			     {
+			    	 
+			    	 
+			     while(noOfRep > 0)
+			     {
+			    	 if(j<1024)
+			    	 mainMemoryArray[j] = temp;
+			    	 totalBuffer[j] = temp;
+			    	 j++;
+			    	 noOfRep --;
+			     }
+			    i += (int) Math.pow(2,prevGlobalDepth - localDepth);
+			   }
+			}
+			printTotalBuffer(totalBuffer);
+			counter = extendibleHashfile.updateDirectoryEntries(totalBuffer,this.directoryPointer);
 			
 		}
 		if(size <= 1024)
@@ -132,12 +184,12 @@ public class MainMemory {
 		    }
 			//read buffer value and update main Memory Directory Entry Array
 			int j = 0;
-			System.out.println("prev Size is "+prevSize);
+			//System.out.println("prev Size is "+prevSize);
 			int accum = 0;
 			for(int i=0;i<prevSize;)
 			{
 			     int localDepth = extendibleHashfile.getLocalDepth(buffer[i]);
-			     System.out.println(this.globalDepth +"is global Depth and Local Depth is "+localDepth);
+			    // System.out.println(this.globalDepth +"is global Depth and Local Depth is "+localDepth);
 			     int noOfRep    = (int) (Math.pow(2, (this.globalDepth - localDepth)));
 			     
 			     accum +=noOfRep;
@@ -145,32 +197,35 @@ public class MainMemory {
 			     
 			     if(temp == oldBucketIndex)
 			     {
-			    	 System.out.println("J value is "+j);
+			    //	 System.out.println("J value is "+j);
 			    	 mainMemoryArray[j] = temp;
+			    	 totalBuffer[j] = temp;
 			    	 j++;
 			    	 mainMemoryArray[j] = newBucketIndex;
+			    	 totalBuffer[j] = newBucketIndex;
 			    	 i++;
 			    	 j++;
 			    	 
 			     }
 			     else
 			     {
-			    	 System.out.println("Total Repititions are "+accum);
+			    //	 System.out.println("Total Repititions are "+accum);
 			    	 
 			     while(noOfRep > 0)
 			     {
 			    	// System.out.println("J value is in while and no of rep are "+j+"  "+noOfRep);
 			    	 mainMemoryArray[j] = temp;
+			    	 totalBuffer[j] = temp;
 			    	 j++;
 			    	 noOfRep --;
 			     }
 			    i += (int) Math.pow(2,prevGlobalDepth - localDepth);
 			   }
 		}
-			
+			printTotalBuffer(totalBuffer);
 			
 		}
-		// Secondary Memory function will be there to get directory block
+		return counter;
 		
 }  
 	public int doubleDirectory(ExtendibleHash extendibleHashfile,int oldBucketIndex,int newBucketIndex) {
@@ -180,17 +235,18 @@ public class MainMemory {
 		int prevSize          = this.size;
 		this.size            *=  2;
 		int count = 0;
+	
 		List<Long> secondaryStorageDirectory = null;
 		if(size > 1024)
 		{
 			//need to create directory entry buckets.
 			secondaryStorageDirectory = extendibleHashfile.getDirectoryEntries(directoryPointer);
 			directoryPointer = extendibleHashfile.createDirectoryMemory(directoryPointer,size - prevSize);
-		
+		    count = fetchDirectoryAndReMap(extendibleHashfile,prevSize,prevGlobalDepth,oldBucketIndex,newBucketIndex,secondaryStorageDirectory);
 		}
 		else
 		{
-			fetchDirectoryAndReMap(extendibleHashfile,prevSize,prevGlobalDepth,oldBucketIndex,newBucketIndex,secondaryStorageDirectory);
+			count = fetchDirectoryAndReMap(extendibleHashfile,prevSize,prevGlobalDepth,oldBucketIndex,newBucketIndex,secondaryStorageDirectory);
 		}
 		return count;
 	}

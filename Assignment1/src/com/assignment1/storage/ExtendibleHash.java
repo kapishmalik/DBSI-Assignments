@@ -16,4 +16,5 @@ public interface ExtendibleHash {
 	public int getLocalDepth(int bucketIndex);
 	public	List<Long> getDirectoryEntries(int pointer);
 	public int createDirectoryMemory(int index,int capacity);
+	public int updateDirectoryEntries(int[] totalBuffer, int directoryPointer);
 }

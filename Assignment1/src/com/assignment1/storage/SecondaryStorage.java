@@ -385,11 +385,12 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 		int temp = pointer;
 		int j = 1024;
 		int counter=0;
-		Bucket b;
+		Bucket b = null;
 		
 		int buckets = (buffer.length -1024)/Bucket.capacity;
 		int offset = (buffer.length -1024)%Bucket.capacity;
-		
+		//System.out.println(buffer.length);
+		System.out.println("Buckets "+buckets+" offset "+offset);
 		while(buckets >0 ){
 			
 			counter = 0;
@@ -397,16 +398,20 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 			bucketAccesses++;			
 			while(counter < Bucket.capacity ){
 				
+				//System.out.println(counter+" "+b.getBucketList().size());
 				b.updateElement(counter, buffer[j]);
 				j++;
 				counter++;
 				
 			}
+			//System.out.println("Temp before value is "+temp);
 			temp = b.getNextBucketPointer();
+			//System.out.println("Temp after value is "+temp);
 			buckets--;
 		
 		}
 		counter = 0;
+		if(offset != 0)
 		b= store.get(temp).get(0);
 		
 		while(counter < offset){

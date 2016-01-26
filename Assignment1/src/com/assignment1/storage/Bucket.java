@@ -8,7 +8,7 @@ public class Bucket {
 	private int freeSpace;
 	private int depth;
 	
-	Bucket( ){
+	Bucket(){
 		
 		list = new ArrayList<Long>();
 		freeSpace = capacity;
@@ -22,7 +22,16 @@ public class Bucket {
 	}
 	public void updateElement(int index,long bucketIndex)
 	{
-		list.set(index, bucketIndex);
+		int length = list.size();
+		if(length == index)
+		{
+			list.add(bucketIndex);
+			freeSpace = Bucket.capacity -list.size(); 
+		}
+		else
+		{
+			list.set(index, bucketIndex);
+		}
 	}
 	public List<Long> getBucketList()
 	{
