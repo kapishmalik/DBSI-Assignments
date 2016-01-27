@@ -20,7 +20,7 @@ public class LinearHashing {
 	private int noOfRecordsInserted     ;
 	private int noOfSuccessSearch       ;
 	private LinearHash linearHashfile   ;
-	
+	private int noOfDataBuckets         ;
 	//Constants
 	static private String FILENAME = "uniform.txt";
 //    private String fileName      ;
@@ -38,6 +38,7 @@ public class LinearHashing {
 //		this.fileName             = fileName;
 		Bucket.capacity  = capacity ;
 		linearHashfile = new SecondaryStorage(m);
+		this.noOfDataBuckets      = 0;
 	}
 	
 	public int getLevel() {
@@ -126,12 +127,6 @@ public class LinearHashing {
 		int i,j;
 		String diskAccessAndStatus = "-";
 		 int diskAccess=1;
-		/* for(i=0;i<bucketVector.size();i++)
-	     {
-			 List<Long> reHashKeys = bucketVector.get(i).getBucketList();
-			 System.out.print(" "+reHashKeys);
-	     }*/
-		// System.out.println("");
 		for(i=0;i<bucketVector.size();i++)
 		{
 			List<Long> reHashKeys = bucketVector.get(i).getBucketList();
@@ -143,13 +138,10 @@ public class LinearHashing {
 				int hashValue = (int) (key%mod2);
 				diskAccessAndStatus=linearHashfile.insertLh(key, hashValue);
 				String[] del = diskAccessAndStatus.split("-");
-				//System.out.println("Disk Access | Status in split function"+del[0]+" "+del[1]);
-				//System.out.println("del[0] "+del[0]);
 				 diskAccess+=Integer.parseInt(del[0]);
 				 
 			}
 		}
-		//System.out.println("Split Cost = "+diskAccess);
 		totalSplitCost +=diskAccess;
 		return 0;
 	}
@@ -196,10 +188,11 @@ public class LinearHashing {
 //		Bucket.capacity = 10;
 		insert();
 		search();
+		this.noOfDataBuckets = this.linearHashfile.totalBuckets();
 		System.out.println("Total Disk Access are "+this.totalInsertDiskAccess);
 		System.out.println("Total Split Cost is "+this.totalSplitCost);
 		System.out.println("Total Records inserted "+this.noOfRecordsInserted);
-		System.out.println("Total buckets "+this.linearHashfile.totalBuckets());
+		System.out.println("Total buckets "+this.noOfDataBuckets);
 		System.out.println("Total no of successful search "+this.noOfSuccessSearch);
 		System.out.println("Total successful search disk Access "+this.totalSearchDiskAccess);
 		

@@ -22,9 +22,7 @@ public class MainMemory {
 		return globalDepth;
 	}
 
-	/*public void setGlobalDepth(int globalDepth) {
-		this.globalDepth = globalDepth;
-	}*/
+	
 
 	public int getDirectoryEntry(ExtendibleHash extendibleHashfile,int index)
 	{
@@ -101,8 +99,9 @@ public class MainMemory {
 		}
 		for(int i=0;i<temp;i++)
 		{
-			//System.out.println("Main Memory index value i is"+i+" "+mainMemoryArray[i]);
+			System.out.print("  "+mainMemoryArray[i]+"  ");
 		}
+		System.out.println(" ");
 	}
 	private void printTotalBuffer(int []totalBuffer)
 	{

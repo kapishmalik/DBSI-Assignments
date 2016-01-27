@@ -107,7 +107,7 @@ class Simulate{
 		
 		//LinearHashing lh = new LinearHashing(2,40);
 		//lh.simulateLinearHashing();
-		ExtendibleHashing eh = new ExtendibleHashing(1,40);
+		ExtendibleHashing eh = new ExtendibleHashing(1,2);
 		eh.simulateExtendibleHashing();
 		
 	}
