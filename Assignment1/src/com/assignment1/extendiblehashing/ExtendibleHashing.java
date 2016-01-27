@@ -2,6 +2,7 @@ package com.assignment1.extendiblehashing;
 
 import java.io.File;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -13,11 +14,12 @@ import com.assignment1.storage.SecondaryStorage;
 public class ExtendibleHashing {
 	
 	private int noOfRecordsInserted                 ;         
-	private int totalSearchDiskAccess               ;
 	private int totalSplitCost                      ;
 	private MainMemory     mainMemory               ;
 	private ExtendibleHash extendibleHashfile       ;
 	private int noOfDataBuckets                     ;
+	private int noOfSuccessSearch                   ;
+	private int totalSearchDiskAccess               ;
 	//constant 
 	static private String FILENAME = "uniform1.txt";
 
@@ -30,6 +32,8 @@ public class ExtendibleHashing {
 		extendibleHashfile    = new SecondaryStorage(m);
 		mainMemory            = new MainMemory()       ;
 		this.noOfDataBuckets  = 0                      ;
+		this.noOfSuccessSearch= 0                      ;
+		this.totalSearchDiskAccess = 0                 ; 
 	}	
 	private String padBinaryKey(Long key)
 	{
@@ -171,11 +175,31 @@ public class ExtendibleHashing {
 		
 	}
 	public void search(){
-		
+		Random generator = new Random();
+		int counter      = 0;
+		while(counter <50){
+			long keyToBeSearched = generator.nextInt(800000);
+			String binaryKey = padBinaryKey(keyToBeSearched);
+		    int hashValue = getHashValue(binaryKey);
+		    if(hashValue >= 1024)
+		    {
+		    	this.totalSearchDiskAccess ++;
+		    }
+		    int index = mainMemory.getDirectoryEntry(extendibleHashfile,hashValue);
+		    int count = extendibleHashfile.searchEH(keyToBeSearched,index);
+		    if(count != 0)
+		    {
+		    	this.noOfSuccessSearch++;
+		    }
+		    this.totalSearchDiskAccess += count;
+		}
 	}
 	
-	public void split(){
-		
+	
+	private int getDataBuckets()
+	{
+		this.noOfDataBuckets = mainMemory.getDataBuckets(extendibleHashfile);
+		return this.noOfDataBuckets;
 	}
 	public void simulateExtendibleHashing(){
 		insert();

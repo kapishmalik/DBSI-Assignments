@@ -249,6 +249,12 @@ public class MainMemory {
 		}
 		return count;
 	}
+
+	public int getDataBuckets(ExtendibleHash extendibleHashfile) {
+		// TODO Auto-generated method stub
+		return extendibleHashfile.getDataBuckets(this.directoryPointer);
+		
+	}
 	
 	
 }
