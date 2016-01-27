@@ -17,4 +17,5 @@ public interface ExtendibleHash {
 	public	List<Long> getDirectoryEntries(int pointer);
 	public int createDirectoryMemory(int index,int capacity);
 	public int updateDirectoryEntries(int[] totalBuffer, int directoryPointer);
+	public int getDataBuckets(int directoryPointer);
 }

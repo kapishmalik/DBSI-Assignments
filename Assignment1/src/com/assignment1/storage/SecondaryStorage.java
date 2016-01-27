@@ -447,7 +447,35 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 		return 0;
 		
 	}
-
+	public int getDataBuckets(int directoryPointer){
+		
+		int storesize=0;
+		int directorysize=0;
+		int temp = directoryPointer;
+		if(temp == -1){
+			
+			directorysize = 0;
+			
+		}else{
+			
+			directorysize = 1;			
+		}				
+		while(temp !=-1){
+				
+				directorysize++;
+				temp = store.get(temp).get(0).getNextBucketPointer();						
+			}
+		
+		
+		for (int i=0;i< store.size();i++){
+			
+			storesize += store.get(i).size();
+			
+		}
+		
+		return (storesize-directorysize);
+		
+	}
 
 	
 	
