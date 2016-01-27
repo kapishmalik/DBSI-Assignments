@@ -427,10 +427,24 @@ public class SecondaryStorage  implements LinearHash,ExtendibleHash {
 		
 	
 
-
-	@Override
-	public void searchEH() {
+//takes key to be searched in the given bucket address
+//returns number of buckets in the vector if the search is successful else return 0
+	
+	public int  searchEH(long key,int bucketIndex) {
 		// TODO Auto-generated method stub
+		Vector<Bucket> v = store.get(bucketIndex);
+		Bucket temp;
+		for(int i =0;i< v.size();i++){
+			
+			temp = v.get(i);
+			if(temp.getBucketList().contains(key)){
+				
+				return (i+1);
+			}
+			
+			
+		}
+		return 0;
 		
 	}
 
