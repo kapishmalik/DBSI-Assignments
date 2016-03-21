@@ -1,7 +1,9 @@
 package com.assignment1.linearhashing;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -22,9 +24,13 @@ public class LinearHashing {
 	private LinearHash linearHashfile   ;
 	private int noOfDataBuckets         ;
 	//Constants
-	static private String FILENAME = "uniform.txt";
-//    private String fileName      ;
+	public static String FILENAME       ;
+	public static String readFileName   ;
+    public static String storageUtilFileName;
+	public static String storageSuccessSearchFileName;
+	public static String storageSplitFileName;
 	
+	private Scanner scanner1;
     public LinearHashing(int m,int capacity)
 	{
 		this.level                = 0;
@@ -69,9 +75,14 @@ public class LinearHashing {
 	private void insert()
 	{
 		 Scanner scanner;
+		 BufferedWriter out1 = null,out2 = null,out3 = null;
 		 
 		try {
 			scanner = new Scanner(new File(FILENAME));
+			scanner1= new Scanner(new File(readFileName));
+			out1 = new BufferedWriter(new FileWriter(this.storageUtilFileName));
+			out2 = new BufferedWriter(new FileWriter(this.storageSuccessSearchFileName));
+			out3 = new BufferedWriter(new FileWriter(this.storageSplitFileName));
 			 while(scanner.hasNextLong())
 			 {
 				 long key = scanner.nextLong();
@@ -105,9 +116,28 @@ public class LinearHashing {
 				    // overflow Happened. Call Split function
 					  split();
 				     setNextPtr();
+				     
+				     
+					  
 				 }
 				
 				  this.noOfRecordsInserted++;
+				  this.noOfDataBuckets = this.linearHashfile.totalBuckets();
+				  float storageUtilization = ((float)this.noOfRecordsInserted)/(this.noOfDataBuckets * Bucket.capacity);
+				  out1.write(this.noOfRecordsInserted+" ,"+storageUtilization+"\n");
+				  out1.flush();
+				  out3.write(this.noOfRecordsInserted+" ,"+this.totalSplitCost+"\n");
+				  out3.flush();
+				  
+				  if(noOfRecordsInserted % 5000 == 0)
+				  {
+					  this.totalSearchDiskAccess = 0;
+					  this.noOfSuccessSearch     = 0;
+					  this.search();
+					  float avgSuccessSearchCost = ((float)this.totalSearchDiskAccess)/(this.noOfSuccessSearch);
+					  out2.write(this.noOfRecordsInserted+" ,"+avgSuccessSearchCost+"\n");
+					  out2.flush();
+				  }
 			    
 			//	 System.out.println("Next Ptr "+nextPtr);
 			 }
@@ -126,7 +156,7 @@ public class LinearHashing {
 		int mod2  = (int) (Math.pow(2,this.level+1)*m);
 		int i,j;
 		String diskAccessAndStatus = "-";
-		 int diskAccess=1;
+		 int diskAccess=1,prevHashValue = -1;
 		for(i=0;i<bucketVector.size();i++)
 		{
 			List<Long> reHashKeys = bucketVector.get(i).getBucketList();
@@ -136,21 +166,26 @@ public class LinearHashing {
 			{
 				long key = reHashKeys.get(j);
 				int hashValue = (int) (key%mod2);
+				
 				diskAccessAndStatus=linearHashfile.insertLh(key, hashValue);
 				String[] del = diskAccessAndStatus.split("-");
-				 diskAccess+=Integer.parseInt(del[0]);
+				if(hashValue != prevHashValue)
+				{
+				 diskAccess += Integer.parseInt(del[0]);
+				}
+				prevHashValue = hashValue;
 				 
 			}
 		}
-		totalSplitCost +=diskAccess;
+		totalSplitCost += diskAccess;
+		
 		return 0;
 	}
 	private void search()
 	{
-		Random generator = new Random();
 		int counter = 0;
 		while(counter <50){
-			long keyToBeSearched = generator.nextInt(800000);
+			long keyToBeSearched = scanner1.nextLong();
 			int mod1             = (int) (Math.pow(2,this.level)*m);
 			int mod2             = (int) (Math.pow(2,this.level+1)*m);
 			int hashValue = (int)keyToBeSearched % mod1;

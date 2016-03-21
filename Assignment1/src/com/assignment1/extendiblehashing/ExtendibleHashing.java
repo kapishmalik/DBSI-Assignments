@@ -1,6 +1,8 @@
 package com.assignment1.extendiblehashing;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -21,7 +23,13 @@ public class ExtendibleHashing {
 	private int noOfSuccessSearch                   ;
 	private int totalSearchDiskAccess               ;
 	//constant 
-	static private String FILENAME = "uniform1.txt";
+	//Constants
+		public static String FILENAME       ;
+		public static String readFileName   ;
+		private Scanner scanner1            ;
+		public static String storageUtilFileName         ;
+		public static String storageSuccessSearchFileName;
+		public static String storageSplitFileName        ;
 
 	public ExtendibleHashing(int m, int capacity){
 		
@@ -39,7 +47,7 @@ public class ExtendibleHashing {
 	{
 		String binaryKey = Long.toBinaryString(key);
 		 int length       = binaryKey.length();
-		 int diff         = 4 - length;
+		 int diff         = 20 - length;
 		while(diff > 0)
 		 {
 			 binaryKey='0'+binaryKey;
@@ -55,15 +63,28 @@ public class ExtendibleHashing {
 		}
 		else
 		{
-			String binaryHashValue = binaryKey.substring(0,mainMemory.getGlobalDepth());
+			String binaryHashValue;
+			if(mainMemory.getGlobalDepth() > 20)
+			{
+				binaryHashValue= binaryKey.substring(0,20);
+			}
+			else
+			{
+				binaryHashValue= binaryKey.substring(0,mainMemory.getGlobalDepth());
+			}
 			return Integer.parseInt(binaryHashValue, 2);
 		}
 	}
 	public void insert(){
 		
 		 Scanner scanner;
+		 BufferedWriter out1 = null,out2 = null,out3 = null;
 		 try {
 				scanner = new Scanner(new File(FILENAME));
+				scanner1= new Scanner(new File(readFileName));
+				out1 = new BufferedWriter(new FileWriter(this.storageUtilFileName));
+				out2 = new BufferedWriter(new FileWriter(this.storageSuccessSearchFileName));
+				out3 = new BufferedWriter(new FileWriter(this.storageSplitFileName));
 				 while(scanner.hasNextLong())
 				 {
 					 long key         = scanner.nextLong();
@@ -96,6 +117,7 @@ public class ExtendibleHashing {
 				    	   splitBucketAndDoubleDirectorySize(index);
 				    	   
 				       }
+				       
 				     }
 				     else
 				     {
@@ -104,6 +126,22 @@ public class ExtendibleHashing {
 				    	 
 				     }
 				     this.noOfRecordsInserted ++;
+				     this.noOfDataBuckets = this.getDataBuckets();
+					  float storageUtilization = ((float)this.noOfRecordsInserted)/(this.noOfDataBuckets * Bucket.capacity);
+					  out1.write(this.noOfRecordsInserted+" ,"+storageUtilization+"\n");
+					  out1.flush();
+					  out3.write(this.noOfRecordsInserted+" ,"+this.totalSplitCost+"\n");
+				      out3.flush();
+				     if(noOfRecordsInserted % 5000 == 0)
+					  {
+				    	 this.totalSearchDiskAccess = 0;
+				    	 this.noOfSuccessSearch     = 0;
+						  this.search();
+						  float avgSuccessSearchCost = ((float)this.totalSearchDiskAccess)/(this.noOfSuccessSearch);
+						  float splitCost = this.totalSplitCost;
+						  out2.write(this.noOfRecordsInserted+" ,"+avgSuccessSearchCost+"\n");
+						  out2.flush();
+					  }
 				 }
 		 }
 		 catch (Exception e) {
@@ -117,6 +155,7 @@ public class ExtendibleHashing {
 		Vector<Bucket> bucketVector = extendibleHashfile.getBucket(bucketIndex)        ;
 		int newBucketIndex          = extendibleHashfile.expandAndRemoveEH(bucketIndex);
 		int splitCost               = 2;
+		int prevIndex = -1;
 		//System.out.println("New Bucket Index and Old Bucket Index "+newBucketIndex+"  "+bucketIndex);
 		splitCost += mainMemory.doubleDirectory(extendibleHashfile, bucketIndex, newBucketIndex);
 		mainMemory.printMainMemory();
@@ -132,11 +171,17 @@ public class ExtendibleHashing {
 		       //System.out.println("Hash Value is "+hashValue);
 		       //get entry from Directory Entry
 		       int index = mainMemory.getDirectoryEntry(extendibleHashfile,hashValue);
+		       
 		       String cost = extendibleHashfile.insertEH(reHashKeys.get(j),index);
 		       String[] del   = cost.split("-");
 		       int accessCost = Integer.parseInt(del[0]);
 		       //System.out.println(cost);
-		       splitCost += accessCost;
+		       if(prevIndex != index)
+				{
+		    	   splitCost += accessCost;
+				}
+		       prevIndex = index;
+		      
 			} 
 	     }
 		this.totalSplitCost += splitCost;
@@ -148,6 +193,7 @@ public class ExtendibleHashing {
 		int localDepth              = bucketVector.get(0).getDepth()                   ;
 		int newBucketIndex          = extendibleHashfile.expandAndRemoveEH(bucketIndex);
 		int splitCost = 2;
+		int prevIndex = -1;
 		//System.out.println("New Bucket Index and Old Bucket Index "+newBucketIndex+"  "+bucketIndex);
 		splitCost += mainMemory.updateDirectoryEntries(extendibleHashfile,newBucketIndex,bucketIndex,localDepth);
 		mainMemory.printMainMemory();
@@ -168,17 +214,23 @@ public class ExtendibleHashing {
 		       String[] del   = cost.split("-");
 		       int accessCost = Integer.parseInt(del[0]);
 		       //System.out.println(cost);
-		       splitCost += accessCost;
+		       if(prevIndex != index)
+				{
+		    	   splitCost += accessCost;
+				}
+		       prevIndex = index;
+		      
 			} 
 	     }
 		this.totalSplitCost += splitCost;
 		
 	}
 	public void search(){
-		Random generator = new Random();
+		
 		int counter      = 0;
+		
 		while(counter <50){
-			long keyToBeSearched = generator.nextInt(800000);
+			long keyToBeSearched = scanner1.nextLong();
 			String binaryKey = padBinaryKey(keyToBeSearched);
 		    int hashValue = getHashValue(binaryKey);
 		    if(hashValue >= 1024)
@@ -192,6 +244,7 @@ public class ExtendibleHashing {
 		    	this.noOfSuccessSearch++;
 		    }
 		    this.totalSearchDiskAccess += count;
+		    counter++;
 		}
 	}
 	
@@ -204,9 +257,7 @@ public class ExtendibleHashing {
 	public void simulateExtendibleHashing(){
 		insert();
 		System.out.println("I am inside simulate EH");
-		System.out.println("Total Disk Access"+this.noOfRecordsInserted);
-		System.out.println("Total Split Cost"+this.totalSplitCost);
-//		Bucket.capacity = 10;
+	//	Bucket.capacity = 10;
 		
 	}
 	

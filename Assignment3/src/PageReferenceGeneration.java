@@ -20,7 +20,7 @@ public class PageReferenceGeneration {
 			for(int j=1;j<=innerBlocks;j++)
 			{
 				try {
-					out.write(outer+i+" "+inner+j);
+					out.write(outer+":"+i+"-"+inner+":"+j);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -45,16 +45,18 @@ public class PageReferenceGeneration {
 			for(int k =1;k<=outerRecords;k++){
 			
 				try {
-					out.write(outer+i+" NULL");
-					out.write("I"+inner+"L"+1+"B"+1+" NULL");
+					out.write(outer+":"+i+"-"+"NULL");
+					out.write("I"+inner+"L:"+1+",B:"+1+"-"+"NULL");
 					for(int j=2;j<=noOfLevels;j++){					
 						
-						int a = r.nextInt(levelBlocks[j])+1;
+						int random = r.nextInt(levelBlocks[j-1])+1;
+						out.write("I"+inner+"L:"+j+",B:"+random+"-"+"NULL");
 						//System.out.println("I"+inner+"L"+j+"B"+a+" NULL");
 						
 					}				
 						
-						int a = r.nextInt(innerBlocks)+1;
+						int random = r.nextInt(innerBlocks)+1;
+						out.write(outer+":"+i+"-"+inner+":"+random);
 //						System.out.println(outer+i+" "+inner+a);
 										
 			
