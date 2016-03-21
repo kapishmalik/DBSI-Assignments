@@ -1,0 +1,72 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Random;
+
+public class PageReferenceGeneration {
+
+	
+	public void BlockNestedLoopGeneration(String outer,String inner,int outerBlocks,int innerBlocks,String fileName)
+	{
+		BufferedWriter out = null;
+		try {
+			 out = new BufferedWriter(new FileWriter(fileName));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for(int i=1;i<=outerBlocks;i++)
+		{
+			for(int j=1;j<=innerBlocks;j++)
+			{
+				try {
+					out.write(outer+i+" "+inner+j);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//System.out.println(outer+i+" "+inner+j);
+			}
+		}
+	}
+	public void SingleLoopGeneration(String outer,int outerBlocks,int outerRecords,String inner,int innerBlocks,int noOfLevels,int []levelBlocks,int startIndex,String fileName)
+	{
+		BufferedWriter out = null;
+		try {
+			 out = new BufferedWriter(new FileWriter(fileName));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Random r = new Random();
+	    for(int i=1;i<=outerBlocks;i++)
+		{
+			
+			for(int k =1;k<=outerRecords;k++){
+			
+				try {
+					out.write(outer+i+" NULL");
+					out.write("I"+inner+"L"+1+"B"+1+" NULL");
+					for(int j=2;j<=noOfLevels;j++){					
+						
+						int a = r.nextInt(levelBlocks[j])+1;
+						//System.out.println("I"+inner+"L"+j+"B"+a+" NULL");
+						
+					}				
+						
+						int a = r.nextInt(innerBlocks)+1;
+//						System.out.println(outer+i+" "+inner+a);
+										
+			
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			//System.out.println(outer+i+" NULL");
+			//System.out.println("I"+inner+"L"+1+"B"+1+" NULL");
+			
+					
+		}
+		}
+	}
+}
